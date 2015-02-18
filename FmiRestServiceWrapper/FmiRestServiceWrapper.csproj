@@ -118,7 +118,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TestApiCore">
-      <HintPath>..\SinusModel\ext\TestApiCore.dll</HintPath>
+      <HintPath>..\packages\Microsoft.TestApi.0.6.0.0\lib\net40\TestApiCore.dll</HintPath>
+    </Reference>
+    <Reference Include="TestApiWpf">
+      <HintPath>..\packages\Microsoft.TestApi.0.6.0.0\lib\net40\TestApiWpf.dll</HintPath>
     </Reference>
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using FMUSingleNodeWrapper.Properties;
+using FMUSingleNodeWrapper.service;
 using ServiceStack.ServiceClient.Web;
 using ServiceStack.ServiceHost;
 
@@ -21,7 +22,7 @@ namespace FMUSingleNodeWrapper
             
             if (NodeServerParams.ArgumentsToContinue)
             {
-                MyUtils.tryFindFile(typeof(NodeServerParams), "*.fmu", "ParamF");
+                SimulateService.DetectFmuFiles();
                 if (NodeServerParams.httphost.Length == 0) NodeServerParams.httphost = getCurrentIPAddress();
                 startHttpServer();
                 runHttpServer();
@@ -103,10 +104,6 @@ namespace FMUSingleNodeWrapper
             foreach (var FMUFile in NodeServerParams.FMUFiles)
             {
                 Console.WriteLine(Resources.Program_startHttpServer_Loaded_model__0__, FMUFile);
-                if (deletetempdir) try{Directory.Delete(NodeServerParams.GetTempDir(FMUFile),true);} catch(Exception e)
-                {//ignoring this exception, probably another process use it
-                }
-                if (!NodeServerParams.FmuNamePath.ContainsKey(FMUFile)) NodeServerParams.FmuNamePath.Add(FMUFile, Directory.GetCurrentDirectory() + "/"+FMUFile);
                 registerRESTWorker(NodeServerParams.listeningOn + "simulation/" + FMUFile + "/", FMUFile);
             }
         }

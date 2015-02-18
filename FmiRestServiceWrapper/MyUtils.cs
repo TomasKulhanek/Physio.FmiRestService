@@ -6,7 +6,7 @@ using Microsoft.Test.CommandLineParsing;
 
 namespace FMUSingleNodeWrapper
 {
-    internal static class MyUtils
+    public static class MyUtils
     {
  
         public static void parseCommandLine (Type t, string[] args)

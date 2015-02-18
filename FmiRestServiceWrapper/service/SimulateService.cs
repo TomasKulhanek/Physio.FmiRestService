@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using ServiceStack.ServiceInterface;
 
 namespace FMUSingleNodeWrapper.service
 {
     public class SimulateService : Service
     {
+        static SimulateService()
+        {
+            DetectFmuFiles();
+        }
+
         //private readonly FMUSimulator Simulator = new FMUSimulator();
         /*
         public object Get(Simulate request)
@@ -32,7 +38,7 @@ namespace FMUSingleNodeWrapper.service
 
         public object Any(Simulate request)
         {
-            NodeServerParams.sw.Restart(); //resets time elapsed from list simulation //TODO some pattern or SPRING.NET
+            //NodeServerParams.sw.Restart(); //resets time elapsed from list simulation //TODO some pattern or SPRING.NET
             //Console.WriteLine("request:" + request.ModelName);
             if (!NodeServerParams.FMUFiles.Contains(request.ModelName))
             {
@@ -40,31 +46,33 @@ namespace FMUSingleNodeWrapper.service
             }
             //simulates specific model - the temp directory is created with tempdir prefix and modelname suffix
             //Console.WriteLine("found:" + request.ModelName);
-            try
-            {
-                FMUSimulator.MyInitSimulator(NodeServerParams.FmuNamePath[request.ModelName], NodeServerParams.GetTempDir(request.ModelName));
-                //Console.WriteLine("fmupath:" + NodeServerParams.FmuNamePath[request.ModelName]);
+            //try
+            //{
+            FMUSimulator.MyInitSimulator(NodeServerParams.FmuNamePath[request.ModelName],
+                NodeServerParams.GetTempDir(request.ModelName));
+            //Console.WriteLine("fmupath:" + NodeServerParams.FmuNamePath[request.ModelName]);
             var myresults = new List<double[]>();
             //if (request.VariableNames.Length > 0)  Console.WriteLine("# variables " + request.VariableNames.Length + " "+ request.VariableNames[0]);
             //TODO do some simulator preparation
             if ((request.TimePoints != null) && (request.TimePoints.Length > 0))
                 //split variablenames also by slash e.g. ph/time will be 'ph' and 'time'
                 //call simulation in specific timepoints
-                lock(thisLock)
-                FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames), request.TimePoints,
-                                          request.ParameterNames, request.ParameterValues);
+                lock (thisLock)
+                    FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames), request.TimePoints,
+                        request.ParameterNames, request.ParameterValues);
             else
                 lock (thisLock)
-                //call simulation step by step                
-                FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames), request.Start, request.Steps,
-                                          request.Stop, request.ParameterNames, request.ParameterValues);
+                    //call simulation step by step                
+                    FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames), request.Start,
+                        request.Steps,
+                        request.Stop, request.ParameterNames, request.ParameterValues);
 
 //            FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames),request.Start,request.Steps,request.Stop); //split variablenames also by slash e.g. ph/time will be 'ph' and 'time'
 
             return new SimulateResponse {Result = myresults.ToArray()};
-            }
-            catch (Exception e)
-            { Console.WriteLine(e.Message); throw e; }
+            //}
+            //catch (Exception e)
+            //{ Console.WriteLine(e.Message); throw e; }
         }
 
 
@@ -75,6 +83,26 @@ namespace FMUSingleNodeWrapper.service
             foreach (string variableName in variableNames)
                 newVariableNames.AddRange(variableName.Split(separators, 20));
             return newVariableNames.ToArray();
+        }
+
+        public static void DetectFmuFiles()
+        {
+            MyUtils.tryFindFile(typeof (NodeServerParams), "*.fmu", "ParamF");
+            foreach (var FMUFile in NodeServerParams.FMUFiles)
+            {
+
+                
+                    try
+                    {
+                        Directory.Delete(NodeServerParams.GetTempDir(FMUFile), true);
+                    }
+                    catch (Exception e)
+                    {
+//ignoring this exception, probably another process use it
+                    }
+                if (!NodeServerParams.FmuNamePath.ContainsKey(FMUFile))
+                    NodeServerParams.FmuNamePath.Add(FMUFile, Directory.GetCurrentDirectory() + "/" + FMUFile);
+            }
         }
     }
 
@@ -98,7 +126,9 @@ namespace FMUSingleNodeWrapper.service
 
         public string ModelName { get; set; }
         public string[] VariableNames { get; set; }
-        public string[] ParameterNames { get; set; } //names of parameter in POST
+    
+
+public string[] ParameterNames { get; set; } //names of parameter in POST
         public double[] ParameterValues { get; set; }
         //values of the parameter in POST in the same order as ParameterNames
         public double[] TimePoints { get; set; }

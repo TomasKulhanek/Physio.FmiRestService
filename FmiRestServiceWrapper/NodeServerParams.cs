@@ -6,7 +6,7 @@ using FMUSingleNodeWrapper.Properties;
 
 namespace FMUSingleNodeWrapper
 {
-    internal class NodeServerParams
+    public class NodeServerParams
     {
         public static string httphost = "";
         public static string httpport = "48048";
