@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ServiceStack.ServiceInterface;
 
-namespace FMUSingleNodeWrapper
+namespace FMUSingleNodeWrapper.service
 {
     public class SimulateService : Service
     {
@@ -33,14 +33,17 @@ namespace FMUSingleNodeWrapper
         public object Any(Simulate request)
         {
             NodeServerParams.sw.Restart(); //resets time elapsed from list simulation //TODO some pattern or SPRING.NET
-            if (! NodeServerParams.FMUFiles.Contains(request.ModelName))
+            //Console.WriteLine("request:" + request.ModelName);
+            if (!NodeServerParams.FMUFiles.Contains(request.ModelName))
             {
                 throw new Exception("Model '" + request.ModelName + "' is not in the list of known models.");
             }
             //simulates specific model - the temp directory is created with tempdir prefix and modelname suffix
-
-            FMUSimulator.MyInitSimulator(NodeServerParams.FmuNamePath[request.ModelName], NodeServerParams.GetTempDir(request.ModelName));
-
+            //Console.WriteLine("found:" + request.ModelName);
+            try
+            {
+                FMUSimulator.MyInitSimulator(NodeServerParams.FmuNamePath[request.ModelName], NodeServerParams.GetTempDir(request.ModelName));
+                //Console.WriteLine("fmupath:" + NodeServerParams.FmuNamePath[request.ModelName]);
             var myresults = new List<double[]>();
             //if (request.VariableNames.Length > 0)  Console.WriteLine("# variables " + request.VariableNames.Length + " "+ request.VariableNames[0]);
             //TODO do some simulator preparation
@@ -59,10 +62,13 @@ namespace FMUSingleNodeWrapper
 //            FMUSimulator.RunSimulator(ref myresults, SplitSlash(request.VariableNames),request.Start,request.Steps,request.Stop); //split variablenames also by slash e.g. ph/time will be 'ph' and 'time'
 
             return new SimulateResponse {Result = myresults.ToArray()};
+            }
+            catch (Exception e)
+            { Console.WriteLine(e.Message); throw e; }
         }
 
 
-        private string[] SplitSlash(IEnumerable<string> variableNames)
+        public string[] SplitSlash(IEnumerable<string> variableNames)
         {
             var newVariableNames = new List<string>();
             var separators = new[] {'/'};

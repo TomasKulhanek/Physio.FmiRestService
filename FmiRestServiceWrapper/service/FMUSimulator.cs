@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace FMUSingleNodeWrapper
+namespace FMUSingleNodeWrapper.service
 {
     internal class FMUSimulator
     {
@@ -230,14 +230,13 @@ namespace FMUSingleNodeWrapper
                 {
                     if (startTime == -1) startTime = 0;
                     double step = simulationsteps > 0 ? (stopTime - startTime)/(double) simulationsteps : 0;
-                    //first set parameters ??
-                    //now set the parameter
-                    SetSimulationParameters(parameterNames, parameterValues);
+                    
                     //reset time resets the simulator??
                     double st = startTime;
                     double sp = stopTime;
-                    ResetSimulationTimes(st, step, sp); //TODO bug when calling the simulation second time
-
+                    ResetSimulationTimes(st, step, sp); //TODO bug when calling the simulation second time                    
+                    //now set the parameter
+                    SetSimulationParameters(parameterNames, parameterValues);
                     //and initialize, after initialization it is not possible to change some other parameters
                     //InitializeSlave(); //fixed bug not set parameters after init
                     SameStepSimulate(ref myresults, varnames);
@@ -260,10 +259,10 @@ namespace FMUSingleNodeWrapper
             double startTime = timePoints[0]; //first point
             double stopTime = timePoints[timePoints.Length - 1]; //last point
             //set simulation times, but the simulation step will be changed during the simulation
-            //bug #163  first set parameters ??
-            SetSimulationParameters(parameterNames, parameterValues);
 
             ResetSimulationTimes(startTime, (stopTime - startTime) / timePoints.Length, stopTime);
+            //bug #163  first set parameters ??
+            SetSimulationParameters(parameterNames, parameterValues);
             
 
             //SetSimulationParameters(parameterNames, parameterValues);

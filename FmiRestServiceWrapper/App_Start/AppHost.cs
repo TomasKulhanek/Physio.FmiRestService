@@ -1,15 +1,8 @@
-using System;
-using System.Linq;
-using System.Configuration;
-using System.Collections.Generic;
-using ServiceStack.Configuration;
-using ServiceStack.OrmLite;
-using ServiceStack.ServiceInterface;
-using ServiceStack.ServiceInterface.Auth;
-using ServiceStack.ServiceInterface.ServiceModel;
+using FMUSingleNodeWrapper.service;
 using ServiceStack.WebHost.Endpoints;
+using AppHost = FMUSingleNodeWrapper.AppHost;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(FMUSingleNodeWrapper.App_Start.AppHost), "Start")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(AppHost), "Start")]
 
 
 /**
@@ -19,7 +12,7 @@ using ServiceStack.WebHost.Endpoints;
  * See other complete web service examples at: https://github.com/ServiceStack/ServiceStack.Examples
  */
 
-namespace FMUSingleNodeWrapper.App_Start
+namespace FMUSingleNodeWrapper
 {
 	public class AppHost
 		: AppHostBase

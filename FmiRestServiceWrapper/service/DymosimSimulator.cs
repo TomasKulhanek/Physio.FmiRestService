@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace FMUSingleNodeWrapper
+namespace FMUSingleNodeWrapper.service
 {
     internal class DymosimSimulator
     {

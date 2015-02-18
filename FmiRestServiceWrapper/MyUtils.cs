@@ -29,7 +29,7 @@ namespace FMUSingleNodeWrapper
                     t.InvokeMember("ParamH", BindingFlags.InvokeMethod, null, null, new object[] { null });
                 } catch(Exception e2)
                 {
-                    //Console.WriteLine("No help is presented. "+ e2.Message);
+                    Console.WriteLine("No help is presented. "+ e2.Message);
                 }
             }
         }

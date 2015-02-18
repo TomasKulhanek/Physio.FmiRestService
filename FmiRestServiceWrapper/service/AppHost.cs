@@ -1,12 +1,10 @@
-﻿using System;
+﻿//using FMUSingleNodeWrapper.service;
+using System;
 using System.Net;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using FMUSingleNodeWrapper.Properties;
-//using FMUSingleNodeWrapper.service;
 using ServiceStack.WebHost.Endpoints;
 
-namespace FMUSingleNodeWrapper
+namespace FMUSingleNodeWrapper.service
 {
   
     internal class AppHost : AppHostHttpListenerBase

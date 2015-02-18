@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using ServiceStack.ServiceInterface;
 
-namespace FMUSingleNodeWrapper
+namespace FMUSingleNodeWrapper.service
 {
     public class SimulateListService : Service
     {

@@ -64,7 +64,7 @@ namespace FMUSingleNodeWrapper
             //throw new NotImplementedException();
         }
 
-        private static AppHost appHost;
+        private static service.AppHost appHost;
 
         //infinite loop of thread reregistering the worker each 30 minutes
         private static void reregisterSimulator()
@@ -87,7 +87,7 @@ namespace FMUSingleNodeWrapper
             string localIP = NodeServerParams.httphost;
             //listening URL
             NodeServerParams.listeningOn = "http://"+localIP+":"+NodeServerParams.httpport+"/worker/";
-            appHost = new AppHost();
+            appHost = new service.AppHost();
             appHost.Init();
             Console.Write(Resources.Program_startHttpServer_AppHost_starting_to_listen_on__0_,NodeServerParams.listeningOn);
             appHost.Start(NodeServerParams.listeningOn);
